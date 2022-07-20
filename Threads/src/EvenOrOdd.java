@@ -1,8 +1,6 @@
 import java.util.ArrayList;
 
 public class EvenOrOdd implements Runnable{
-
-    private final Object LOCK = new Object();
     private static ArrayList<Integer> evenList = new ArrayList<>();
     private static ArrayList<Integer> oddList = new ArrayList<>();
 
@@ -17,16 +15,20 @@ public class EvenOrOdd implements Runnable{
 
     @Override
     public void run() {
-        synchronized (LOCK){
-            for (Integer no : arrayList ) {
-                if (no%2==0){
-                    evenList.add(no);
-                }else oddList.add(no);
+        calculating();
+    }
+
+    public synchronized void calculating(){
+        for (Integer no : arrayList ) {
+            if (no%2==0){
+                evenList.add(no);
+            }else {
+                oddList.add(no);
             }
         }
     }
 
-    public ArrayList<Integer> getEvenList() {
+    public static ArrayList<Integer> getEvenList() {
         return evenList;
     }
 
@@ -34,7 +36,7 @@ public class EvenOrOdd implements Runnable{
         EvenOrOdd.evenList = evenList;
     }
 
-    public ArrayList<Integer> getOddList() {
+    public static ArrayList<Integer> getOddList() {
         return oddList;
     }
 
