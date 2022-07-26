@@ -3,10 +3,7 @@ package com.Patikadev.Model;
 import com.Patikadev.Helper.Helper;
 import com.Patikadev.Helper.postgreSqlConnection;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
 public class User {
@@ -83,11 +80,14 @@ public class User {
                 user.setLogin_name(rs.getString("login_name"));
                 user.setUser_password(rs.getString("user_password"));
                 user.setUser_type(rs.getString("user_type"));
+                prst.close();
+                rs.close();
                 break;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        }return user;
+        }
+        return user;
     }
     public static boolean deleteUser(int id){
         String query = "DELETE FROM Users WHERE user_id = ?";
@@ -98,6 +98,27 @@ public class User {
         } catch (SQLException e) {
             e.printStackTrace();
         }return true;
+    }
+
+    public static boolean updateUser(int user_id, String user_name, String login_name, String user_password, String user_type) throws SQLException {
+        String query = "UPDATE Users SET user_name = ?,login_name=?,user_password=?,user_type=CAST(? AS type_enum) WHERE user_id = ?";
+        User obj = User.hasUser(login_name);
+        if (obj  != null && obj.getUser_id() != user_id){
+            Helper.showMessage("Kullanıcı adı kullanılıyor!");
+            return false;
+        }
+        try {
+            PreparedStatement st= postgreSqlConnection.connectToDatabase().prepareStatement(query);
+            st.setString(1,user_name);
+            st.setString(2,login_name);
+            st.setString(3,user_password);
+            st.setString(4,user_type);
+            st.setInt(5,user_id);
+            return st.executeUpdate() != -1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return true;
+        }
     }
 
     public int getUser_id() {
@@ -140,3 +161,4 @@ public class User {
         this.user_type = user_type;
     }
 }
+

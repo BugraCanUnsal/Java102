@@ -7,6 +7,7 @@ import com.Patikadev.Model.User;
 import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
@@ -109,6 +110,19 @@ public class OperatorGUI extends JFrame{
             }catch (Exception exception){
                 System.out.println(exception.getMessage());
             }
+        });
+
+        table_userList.getModel().addTableModelListener(e -> {
+            if (e.getType() == TableModelEvent.UPDATE){
+                int user_id = Integer.parseInt(table_userList.getValueAt(table_userList.getSelectedRow(),0).toString());
+                String user_name = table_userList.getValueAt(table_userList.getSelectedRow(),1).toString();
+                String login_name = table_userList.getValueAt(table_userList.getSelectedRow(),2).toString();
+                String user_password = table_userList.getValueAt(table_userList.getSelectedRow(),3).toString();
+                String user_type = table_userList.getValueAt(table_userList.getSelectedRow(),4).toString();
+
+
+            }
+            refreshUserList();
         });
     }
     private void refreshUserList(){
